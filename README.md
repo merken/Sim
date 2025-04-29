@@ -1,4 +1,4 @@
-# Introduction 
+# Sim, an API Simulator 
 
 Build the sim docker image from the ./src directory:
 
