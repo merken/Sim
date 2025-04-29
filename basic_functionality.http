@@ -1,0 +1,52 @@
+@Simulator_HostAddress = http://localhost:5010
+
+### Purge all existing simulations
+DELETE {{Simulator_HostAddress}}/api/simulations/purge
+
+### Order 1
+POST {{Simulator_HostAddress}}/api/simulations
+Content-Type: application/json
+
+{
+  "route" : "/api/orders/1",
+  "method" : "Get",
+  "persistence" : "Always",
+  "responseStatusCode" : 200,
+  "responseBody": "{\"id\":1,\"status\":\"payed\"}"
+}
+
+### Order 2
+POST {{Simulator_HostAddress}}/api/simulations
+Content-Type: application/json
+
+{
+  "route" : "/api/orders/2",
+  "method" : "Get",
+  "persistence" : "Always",
+  "responseStatusCode" : 200,
+  "responseBody": "{\"id\":2,\"status\":\"cancelled\"}"
+}
+
+### Order 3 query params
+POST {{Simulator_HostAddress}}/api/simulations
+Content-Type: application/json
+
+{
+  "route" : "/api/orders?orderId=3",
+  "method" : "Get",
+  "persistence" : "Always",
+  "responseStatusCode" : 200,
+  "responseBody": "{\"id\":3,\"status\":\"cancelled\"}"
+}
+
+### Order 3 query params + details
+POST {{Simulator_HostAddress}}/api/simulations
+Content-Type: application/json
+
+{
+  "route" : "/api/orders?orderId=3&getdetails=true",
+  "method" : "Get",
+  "persistence" : "Always",
+  "responseStatusCode" : 200,
+  "responseBody": "{\"id\":3,\"status\":\"cancelled\", \"details\": \"details\"}"
+}

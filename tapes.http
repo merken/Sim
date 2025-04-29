@@ -1,0 +1,72 @@
+@Simulator_HostAddress = http://localhost:5010
+@tape1 = tape1
+@tape2 = tape2
+
+### Purge all existing simulations
+DELETE {{Simulator_HostAddress}}/api/simulations/purge
+
+### Tape1 Create Order the first time
+POST {{Simulator_HostAddress}}/api/simulations
+Content-Type: application/json
+
+{
+  "tape": "{{tape1}}",
+  "route" : "/api/orders/1",
+  "method" : "POST",
+  "persistence" : "Once",
+  "responseStatusCode" : 504,
+  "responseBody": "504 Gateway Timeout"
+}
+
+### Tape1 Create Order the second time
+POST {{Simulator_HostAddress}}/api/simulations
+Content-Type: application/json
+
+{
+  "tape": "{{tape1}}",
+  "route" : "/api/orders/1",
+  "method" : "POST",
+  "bodyRegex": "",
+  "persistence" : "Once",
+  "responseStatusCode" : 200,
+  "responseBody": "{\"id\":1,\"status\":\"created\"}",
+  "responseContentType" : "application/json"
+}
+
+### Tape2 Create Order the first time succeeds
+POST {{Simulator_HostAddress}}/api/simulations
+Content-Type: application/json
+
+{
+  "tape": "{{tape2}}",
+  "route" : "/api/orders/1",
+  "method" : "POST",
+  "bodyRegex": "",
+  "persistence" : "Once",
+  "responseStatusCode" : 200,
+  "responseBody": "{\"id\":2,\"status\":\"created\"}",
+  "responseContentType" : "application/json"
+}
+
+### Tape2 Create Order the always succeeds
+POST {{Simulator_HostAddress}}/api/simulations
+Content-Type: application/json
+
+{
+  "tape": "{{tape2}}",
+  "route" : "/api/orders/1",
+  "method" : "POST",
+  "bodyRegex": "",
+  "persistence" : "Always",
+  "responseStatusCode" : 200,
+  "responseBody": "{\"id\":999,\"status\":\"created\"}",
+  "responseContentType" : "application/json"
+}
+
+### Tape1 Create Order
+POST {{Simulator_HostAddress}}/api/orders/1
+X-Simulator-Tape: {{tape1}}
+
+### Tape2 Create Order, never runs out of tape
+POST {{Simulator_HostAddress}}/api/orders/1
+X-Simulator-Tape: {{tape2}}

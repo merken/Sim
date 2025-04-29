@@ -1,0 +1,74 @@
+﻿@page "/products"
+@rendermode InteractiveServer
+@using MyShop.Business
+@attribute [StreamRendering]
+@inject IProductCatalogService productCatalogService
+@inject ICartService cartService
+
+<PageTitle>Products</PageTitle>
+
+<h1>Products</h1>
+@if (cartTotals != null)
+{
+    <div class="alert alert-info">
+        <strong>Cart Totals:</strong> € @cartTotals.Total for @cartTotals.Count items
+    </div>
+}
+
+@if (products == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th aria-label="Price">Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var product in products)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>€ @product.Price</td>
+                <td>
+                    <button class="btn btn-primary" @onclick="()=>OnAddToCart(product.Name)">Add to cart</button>
+                </td>
+            </tr>
+        }
+        <p>@message</p>
+        </tbody>
+    </table>
+}
+
+@code {
+    private Product[]? products;
+    private CartTotals? cartTotals;
+    private string message = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var products = await productCatalogService.GetProducts();
+        this.products = products.ToArray();
+        cartTotals = await cartService.GetTotals();
+    }
+
+    private async void OnAddToCart(string productName)
+    {
+        var product = products.FirstOrDefault(p => p.Name == productName);
+        await cartService.AddToCart(product);
+        message = $"{product.Name} was added to the cart.";
+        StateHasChanged();
+        await Task.Delay(1000);
+        message = string.Empty;
+        StateHasChanged();
+        cartTotals = await cartService.GetTotals();
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,96 @@
+@cartApiSimulator = http://localhost:5010
+@productsApiSimulator = http://localhost:5011
+@paymentApiSimulator = http://localhost:5012
+
+### Purge all existing simulations from Cart
+DELETE {{cartApiSimulator}}/api/simulations/purge
+### Purge all existing simulations from Products
+DELETE {{productsApiSimulator}}/api/simulations/purge
+### Purge all existing simulations from Payment
+DELETE {{paymentApiSimulator}}/api/simulations/purge
+
+### Cart API
+POST {{cartApiSimulator}}/api/simulations
+Content-Type: application/json
+
+{
+  "route" : "/api/cart",
+  "method" : "GET",
+  "persistence" : "Always",
+  "responseStatusCode" : 200,
+  "responseBody": "[\r\n    {\r\n        \"name\": \"Book about Python\",\r\n        \"price\": 55.55\r\n    }\r\n]"
+}
+
+### Very Pricey Cart API
+POST {{cartApiSimulator}}/api/simulations
+Content-Type: application/json
+
+{
+  "route" : "/api/cart",
+  "method" : "GET",
+  "persistence" : "Once",
+  "responseStatusCode" : 200,
+  "responseBody": "[\r\n  {\r\n        \"name\": \"Book about JavaScript\",\r\n        \"price\": 44.44\r\n    },  {\r\n        \"name\": \"Book about JavaScript\",\r\n        \"price\": 44.44\r\n    },\r\n    {\r\n        \"name\": \"Book about Python\",\r\n        \"price\": 55.55\r\n    },\r\n    {\r\n        \"name\": \"Book about Java\",\r\n        \"price\": 66.66\r\n    },\r\n    {\r\n        \"name\": \"Book about C++\",\r\n        \"price\": 77.77\r\n    },\r\n    {\r\n        \"name\": \"Book about C#\",\r\n        \"price\": 88.88\r\n    }\r\n]"
+}
+
+### Products API
+POST {{productsApiSimulator}}/api/simulations
+Content-Type: application/json
+
+{
+  "route" : "/api/products",
+  "method" : "GET",
+  "persistence" : "Always",
+  "responseStatusCode" : 200,
+  "responseBody": "[\r\n    {\r\n        \"name\": \"Book about JavaScript\",\r\n        \"price\": 44.44\r\n    },\r\n    {\r\n        \"name\": \"Book about Python\",\r\n        \"price\": 55.55\r\n    },\r\n    {\r\n        \"name\": \"Book about Java\",\r\n        \"price\": 66.66\r\n    },\r\n    {\r\n        \"name\": \"Book about C++\",\r\n        \"price\": 77.77\r\n    },\r\n    {\r\n        \"name\": \"Book about C#\",\r\n        \"price\": 88.88\r\n    }\r\n]"
+}
+
+### Payment API Success
+POST {{paymentApiSimulator}}/api/simulations
+Content-Type: application/json
+
+{
+  "route" : "/api/payment",
+  "method" : "POST",
+  "persistence" : "Always",
+  "responseStatusCode" : 200,
+  "responseBody": "{\"success\": true }"
+}
+
+### Payment API Failure
+POST {{paymentApiSimulator}}/api/simulations
+Content-Type: application/json
+
+{
+  "route" : "/api/payment",
+  "method" : "POST",
+  "persistence" : "Once",
+  "responseStatusCode" : 200,
+  "responseBody": "{\"success\": false, \"message\": \"Payment failed, insufficient funds\" }"
+}
+
+### Payment API Failure 2
+POST {{paymentApiSimulator}}/api/simulations
+Content-Type: application/json
+
+{
+  "route" : "/api/payment",
+  "method" : "POST",
+  "persistence" : "Once",
+  "bodyRegex": "Book about JavaScript",
+  "responseStatusCode" : 200,
+  "responseBody": "{\"success\": false, \"message\": \"Devs don't let fellow-devs do JavaScript\" }"
+}
+
+### Payment API Failure 3
+POST {{paymentApiSimulator}}/api/simulations
+Content-Type: application/json
+
+{
+  "route" : "/api/payment",
+  "method" : "POST",
+  "persistence" : "Once",
+  "bodyRegex": "123456789",
+  "responseStatusCode" : 200,
+  "responseBody": "{\"success\": false, \"message\": \"That's not a real card number...\" }"
+}

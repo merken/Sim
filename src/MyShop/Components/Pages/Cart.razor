@@ -1,0 +1,114 @@
+﻿@page "/cart"
+@using MyShop.Business
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject ICartService cartService
+@inject IPaymentService paymentService
+
+<PageTitle>Cart</PageTitle>
+
+<h1>Cart</h1>
+@if (products == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th aria-label="Price">Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (products == null || products.Length == 0)
+        {
+            <tr>
+                <td colspan="3">Your cart is empty.</td>
+            </tr>
+        }
+        else
+            @foreach (var product in products)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>€ @product.Price</td>
+                <td>
+                    <button class="btn btn-primary" @onclick="() => OnRemoveFromCart(product)">Remove from cart</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+        <br/>
+        <div class="form-group">
+            <label for="cardNumber">Card Number</label>
+            <input id="cardNumber" class="form-control" oninput="applyNumberMask(event)" @bind="CardNumber"/>
+            <br/>
+            <button class="btn btn-primary" type="submit" @onclick="OnPayment">Pay € @cartTotals.Total now!</button>
+        </div>
+        <br/>
+        <p>@message</p>
+    </table>
+}
+
+@code {
+    private Product[]? products;
+    private CartTotals? cartTotals;
+    private string message = string.Empty;
+    public string CardNumber { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var products = await cartService.GetCart();
+        this.products = products.ToArray();
+        cartTotals = await cartService.GetTotals();
+    }
+
+    private async void OnRemoveFromCart(Product product)
+    {
+        await cartService.RemoveFromCart(product);
+        message = $"{product.Name} was removed from the cart.";
+        StateHasChanged();
+        await Task.Delay(1000);
+        message = string.Empty;
+        StateHasChanged();
+        var products = await cartService.GetCart();
+        this.products = products.ToArray();
+        cartTotals = await cartService.GetTotals();
+        StateHasChanged();
+    }
+
+    private async void OnPayment()
+    {
+        message = $"Processing payment...";
+        StateHasChanged();
+        var paymentRequest = new PaymentRequest
+        {
+            CardNumber = CardNumber,
+            Amount = products.Sum(p => p.Price),
+            Products = products.Select(p => p.Name).ToArray()
+        };
+        await Task.Delay(1000);
+        var result = await paymentService.SubmitPayment(paymentRequest);
+        if (result.Success)
+        {
+            message = $"Payment successful!";
+            await cartService.Clear();
+            var products = await cartService.GetCart();
+            this.products = products.ToArray();
+            cartTotals = await cartService.GetTotals();
+            CardNumber = string.Empty;
+            StateHasChanged();
+        }
+        else
+        {
+            message = result.Message;
+        }
+
+        StateHasChanged();
+    }
+
+}
