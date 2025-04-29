@@ -1,5 +1,5 @@
-using Sim.Api.Validators;
 using Microsoft.AspNetCore.Mvc;
+using Sim.Api.Validators;
 
 namespace Sim.Api;
 

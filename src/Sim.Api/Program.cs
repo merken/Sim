@@ -1,8 +1,5 @@
 using System.Globalization;
 using System.Text.Json;
-using Sim.Api;
-using Sim.Api.Controllers;
-using Sim.Api.Validators;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using Asp.Versioning.Builder;
@@ -10,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Sim.Api;
+using Sim.Api.Controllers;
+using Sim.Api.Validators;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);

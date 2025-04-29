@@ -124,7 +124,7 @@ public class RouteSelectionTests : SimulationTestBase
         await AddSimulatorEntry(new SimulationsDataEntryModel("/api/test", "GET",
             SimulationsDataEntryModel.PersistenceOnce,
             SimulationsDataEntryModel.ResponseOK200, "Delayed response", responseContentType: "text/plain",
-            timeoutInMs: 5));
+            timeoutInMs: 5000));
 
         var timer = DateTime.Now;
         var response = await SimulatorClient.GetAsync("/api/test");

@@ -63,7 +63,9 @@ public class DynamicControllerRouteTransformer(
         {
             values = new RouteValueDictionary
             {
-                ["controller"] = "Dynamic", ["action"] = "OutOfTape", ["tape"] = entryResult.Tape
+                ["controller"] = "Dynamic",
+                ["action"] = "OutOfTape",
+                ["tape"] = entryResult.Tape
             };
             return values;
         }
@@ -77,7 +79,9 @@ public class DynamicControllerRouteTransformer(
 
         values = new RouteValueDictionary
         {
-            ["controller"] = "Dynamic", ["action"] = "GetEntry", ["id"] = entryResult.Id
+            ["controller"] = "Dynamic",
+            ["action"] = "GetEntry",
+            ["id"] = entryResult.Id
         };
 
         logger.LogInformation("Matching entry found for {route} {method} {tape} {query} {id}", route,

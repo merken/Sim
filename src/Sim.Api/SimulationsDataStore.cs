@@ -104,9 +104,9 @@ public class SimulationsDataStore : ISimulationsDataStore
                     {
                         var count = 0;
                         foreach (var entry in queryStrings)
-                        foreach (var parameter in e.Value.QueryParameters)
-                            if (String.Equals(parameter, entry, StringComparison.CurrentCultureIgnoreCase))
-                                count++;
+                            foreach (var parameter in e.Value.QueryParameters)
+                                if (String.Equals(parameter, entry, StringComparison.CurrentCultureIgnoreCase))
+                                    count++;
                         return new { Count = count, Value = e };
                     })
                 .Where(x => x.Count > 0)
