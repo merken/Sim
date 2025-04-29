@@ -61,5 +61,5 @@ Content-Type: application/json
   "persistence" : "Always",
   "responseStatusCode" : 200,
   "responseBody": "{\"id\":4,\"status\":\"cancelled\", \"details\": \"long time no see\"}",
-  "timeoutInMs": 5
+  "timeoutInMs": 2000
 }
