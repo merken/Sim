@@ -117,4 +117,20 @@ public class RouteSelectionTests : SimulationTestBase
         Assert.IsTrue(response.IsSuccessStatusCode, "Response should be successful");
         Assert.AreEqual("Entry 1", await response.Content.ReadAsStringAsync(), "Response content should match");
     }
+
+    [TestMethod]
+    public async Task TestRouteSelection_Timeout()
+    {
+        await AddSimulatorEntry(new SimulationsDataEntryModel("/api/test", "GET",
+            SimulationsDataEntryModel.PersistenceOnce,
+            SimulationsDataEntryModel.ResponseOK200, "Delayed response", responseContentType: "text/plain",
+            timeoutInMs: 5));
+
+        var timer = DateTime.Now;
+        var response = await SimulatorClient.GetAsync("/api/test");
+        var delay = DateTime.Now - timer;
+
+        Assert.IsTrue(response.IsSuccessStatusCode, "Response should be successful");
+        Assert.IsTrue(delay.Seconds >= 5);
+    }
 }

@@ -52,6 +52,9 @@ public class SimulationsDataStore : ISimulationsDataStore
         CancellationToken cancellationToken = default
     )
     {
+        if (cancellationToken.IsCancellationRequested)
+            return null;
+
         var entry = _cache.TryGet(id, out SimulatorDataEntry? value) ? value : null;
 
         return entry;
@@ -66,6 +69,9 @@ public class SimulationsDataStore : ISimulationsDataStore
         CancellationToken cancellationToken = default
     )
     {
+        if (cancellationToken.IsCancellationRequested)
+            return EntryResult.NoResult();
+
         var routeToFind = route.Trim();
         if (!routeToFind.StartsWith('/'))
             routeToFind = $"/{routeToFind}";
@@ -98,9 +104,9 @@ public class SimulationsDataStore : ISimulationsDataStore
                     {
                         var count = 0;
                         foreach (var entry in queryStrings)
-                            foreach (var parameter in e.Value.QueryParameters)
-                                if (String.Equals(parameter, entry, StringComparison.CurrentCultureIgnoreCase))
-                                    count++;
+                        foreach (var parameter in e.Value.QueryParameters)
+                            if (String.Equals(parameter, entry, StringComparison.CurrentCultureIgnoreCase))
+                                count++;
                         return new { Count = count, Value = e };
                     })
                 .Where(x => x.Count > 0)
@@ -194,6 +200,9 @@ public class SimulationsDataStore : ISimulationsDataStore
         CancellationToken cancellationToken = default
     )
     {
+        if (cancellationToken.IsCancellationRequested)
+            return Guid.Empty;
+
         var id = Guid.NewGuid();
         _cache.TryAdd(id, entry);
 
@@ -202,11 +211,17 @@ public class SimulationsDataStore : ISimulationsDataStore
 
     public async Task DeleteEntry(Guid id, CancellationToken cancellationToken = default)
     {
+        if (cancellationToken.IsCancellationRequested)
+            return;
+
         _cache.Remove(id);
     }
 
     public async Task DeleteAllEntries(string? tape, CancellationToken cancellationToken = default)
     {
+        if (cancellationToken.IsCancellationRequested)
+            return;
+
         if (!string.IsNullOrEmpty(tape))
         {
             var entries = _cache.AsEnumerable();

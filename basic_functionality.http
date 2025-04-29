@@ -50,3 +50,16 @@ Content-Type: application/json
   "responseStatusCode" : 200,
   "responseBody": "{\"id\":3,\"status\":\"cancelled\", \"details\": \"details\"}"
 }
+
+### Order 4 with timout
+POST {{Simulator_HostAddress}}/api/simulations
+Content-Type: application/json
+
+{
+  "route" : "/api/orders?orderId=4",
+  "method" : "Get",
+  "persistence" : "Always",
+  "responseStatusCode" : 200,
+  "responseBody": "{\"id\":4,\"status\":\"cancelled\", \"details\": \"long time no see\"}",
+  "timeoutInMs": 5
+}

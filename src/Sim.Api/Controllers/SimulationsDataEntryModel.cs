@@ -12,6 +12,7 @@ public class SimulationsDataEntryModel
     public string? Tape { get; set; }
     public byte[]? File { get; set; }
     public string? FileName { get; set; }
+    public int TimeoutInMs { get; set; }
 
     public static SimulatorDataEntry ToSimulatorDataEntry(
         SimulationsDataEntryModel model
@@ -58,7 +59,8 @@ public class SimulationsDataEntryModel
             model.ResponseContentType,
             model.Tape,
             model.File,
-            model.FileName
+            model.FileName,
+            model.TimeoutInMs
         );
     }
 }

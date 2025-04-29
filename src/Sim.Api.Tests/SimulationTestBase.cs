@@ -18,7 +18,8 @@ public class SimulationsDataEntryModel(
     string? bodyRegex = "",
     byte[]? file = null,
     string? fileName = null,
-    string? fileContentType = null)
+    string? fileContentType = null,
+    int? timeoutInMs = null)
 {
     public static string TapeHeader = "X-Simulator-Tape";
     public static string PersistenceOnce = "Once";
@@ -38,8 +39,8 @@ public class SimulationsDataEntryModel(
     public byte[]? File { get; private set; } = file;
     public string? FileName { get; private set; } = fileName;
     public string? FileContentType { get; private set; } = fileContentType;
-
     public string? Tape { get; private set; }
+    public int? TimeoutInMs { get; private set; } = timeoutInMs;
 
     internal void AddToTape(string tape)
     {

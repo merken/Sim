@@ -25,7 +25,14 @@ public class DynamicController(ISimulationsDataStore simulationsDataStore, ILogg
             return NotFound();
         }
 
+        if (entry.TimeoutInMs != null && entry.TimeoutInMs > 0)
+        {
+            logger.LogInformation("Simulating timeout {timeout} for ID: {id}", entry.TimeoutInMs, id);
+            await Task.Delay(TimeSpan.FromMilliseconds(entry.TimeoutInMs.Value), cancellationToken);
+        }
+
         entry.DecreasePersistence();
+
         if (entry.Persistence == SimulatorDataEntryPersistence.None)
             await simulationsDataStore.DeleteEntry(id, cancellationToken);
 

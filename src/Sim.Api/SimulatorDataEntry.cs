@@ -12,7 +12,8 @@ public class SimulatorDataEntry(
     string? responseContentType,
     string? tape,
     byte[]? file,
-    string? fileName
+    string? fileName,
+    int? timeoutInMs = null
 )
 {
     public DateTime Added { get; } = added;
@@ -27,6 +28,7 @@ public class SimulatorDataEntry(
     public string? Tape { get; } = tape;
     public byte[]? File { get; private set; } = file;
     public string? FileName { get; private set; } = fileName;
+    public int? TimeoutInMs { get; } = timeoutInMs;
 
     public void DecreasePersistence()
     {
